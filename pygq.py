@@ -5,7 +5,7 @@
 
 import requests
 
-class QData:
+class PyGQ:
     SURAH_LAST = 114
     SURAH_FIRST = 1
     def __init__(self, url="http://api.globalquran.com/ayah/", token="", lg_codes={}):
@@ -60,6 +60,6 @@ if __name__ == "__main__":
     ayah = int(surah)
     lang = "en.sahih" if len(sys.argv) < 3 else sys.argv[2]
 
-    Q = QData()
+    Q = PyGQ()
     print(Q.getAyah(surah, ayah, lang)["verse"])
     
