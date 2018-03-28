@@ -57,7 +57,7 @@ if __name__ == "__main__":
     
     surah, ayah = sys.argv[1].split(":")
     surah = int(surah)
-    ayah = int(surah)
+    ayah = int(ayah)
     lang = "en.sahih" if len(sys.argv) < 3 else sys.argv[2]
 
     Q = PyGQ()
