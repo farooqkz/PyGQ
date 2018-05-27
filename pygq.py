@@ -19,7 +19,8 @@ import requests
 class PyGQ:
     SURAH_LAST = 114
     SURAH_FIRST = 1
-    def __init__(self, url="http://api.globalquran.com/ayah/", token="", lg_codes={}):
+    def __init__(self, url="http://api.globalquran.com/ayah/", token="",
+    lg_codes={}, cache_size=0):
         """url and token are API url and token. lg_codes is a dict which maps 
            2 letter language codes to their fullname. like:
            {"en": "en.sahih", "ar": "quran-simple"}
@@ -28,6 +29,14 @@ class PyGQ:
         self.url = url
         self.token = token
         self.lg_codes = lg_codes
+        self.cache_size = cache_size
+        self.cache = list()
+
+    def __update_cache(self):
+        if not self.cache_size: return
+        if len(self.cache) > self.cache_size:
+            while len(self.cache) > self.cache_size:
+                self.cache.pop()
 
     def getAyah(self, surah, ayah, lang):
         """Returns a dict containing the verse itself, ayah and surah number
@@ -44,11 +53,20 @@ class PyGQ:
                 lang = self.lg_codes[lang]
             else:
                 raise ValueError(lang+ " is not supported using 2letter codes")
-        
         if (not self.SURAH_FIRST <= surah <= self.SURAH_LAST):
             raise ValueError("surah(chapter) must be between "
                              + str(self.SURAH_FIRST) + " and " +
                              str(self.SURAH_LAST))
+
+        # TODO: check if it's in cache, if so use cache, if not get and add to
+        # cache
+        if self.cache_size:
+            for key, json_ in self.cache: # FIXME: better name than json_
+                if (surah,ayah,lang) == key:
+                    self.cache.remove((key,json_))
+                    self.cache.insert(0, (key,json_))
+                    return json_
+                    
 
         req_url = self.url + str(surah) + ":" + str(ayah) + "/" + lang
         ayah_json = requests.get(req_url, params = {'key': self.token}).json()
@@ -58,6 +76,8 @@ class PyGQ:
         if ayah_json["surah"] != surah:
             raise ValueError("Invalid ayah number for this surah")
         
+        self.cache.insert(0, ((surah, ayah, lang), ayah_json))
+        self.__update_cache()
         return ayah_json
 
 if __name__ == "__main__":
