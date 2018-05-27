@@ -1,0 +1,3 @@
+ - the ##islam member on freenode (Original author)
+ - Farooq Karimi Zadeh (created the independent PyGQ module)
+ - Usama Akkad
