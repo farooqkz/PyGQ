@@ -1,5 +1,6 @@
 # PyGQ
 ### A python module to get Quran verses using GlobalQuran API
+## Moved to https://notabug.org/farooqkz/PyGQ
 
 PyGQ uses GlobalQuran API to get Quran verses in multiple translations. It was
 a part of KoranFinder after I decided to re-write this part and now it can be
